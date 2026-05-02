@@ -1,22 +1,22 @@
 "use client";
 
-
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import { useTransition } from "react";
+import { logoutAction } from "@/actions/auth";
 import {
     Bell,
     Menu,
     Moon,
     Plus,
-    Search,
     Settings,
     Sun,
     LogOut,
     User,
     CalendarPlus,
     UserPlus,
-    FileText,
-    CheckCircle,
+    TrendingUp,
+    Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,6 +39,13 @@ interface TopbarProps {
 export function Topbar({ user }: TopbarProps) {
     const { toggleMobileMenu } = useLayoutStore();
     const { theme, setTheme } = useTheme();
+    const [isPending, startTransition] = useTransition();
+
+    function handleLogout() {
+        startTransition(async () => {
+            await logoutAction();
+        });
+    }
 
     return (
         <header className="fixed top-0 left-0 right-0 h-[60px] bg-[var(--bg-topbar)] text-white z-50 flex items-center px-4 justify-between shadow-md">
@@ -93,9 +100,9 @@ export function Topbar({ user }: TopbarProps) {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild className="cursor-pointer gap-2">
-                            <Link href="/dashboard/reports/new">
-                                <FileText className="h-4 w-4 text-violet-500" />
-                                <span>New Report</span>
+                            <Link href="/dashboard/reports">
+                                <TrendingUp className="h-4 w-4 text-violet-500" />
+                                <span>View Reports</span>
                             </Link>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -187,20 +194,29 @@ export function Topbar({ user }: TopbarProps) {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="cursor-pointer">
-                            <User className="mr-2 h-4 w-4" />
-                            <span>Profile</span>
+                        <DropdownMenuItem asChild className="cursor-pointer">
+                            <Link href="/dashboard/settings/users">
+                                <User className="mr-2 h-4 w-4" />
+                                <span>Profile</span>
+                            </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="cursor-pointer">
-                            <Settings className="mr-2 h-4 w-4" />
-                            <span>Settings</span>
-                            {/* <DropdownMenuShortcut>⌘S</DropdownMenuShortcut> */}
+                        <DropdownMenuItem asChild className="cursor-pointer">
+                            <Link href="/dashboard/settings">
+                                <Settings className="mr-2 h-4 w-4" />
+                                <span>Settings</span>
+                            </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/10">
-                            <LogOut className="mr-2 h-4 w-4" />
-                            <span>Log out</span>
-                            {/* <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut> */}
+                        <DropdownMenuItem
+                            className="cursor-pointer text-red-600 dark:text-red-400 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-900/10"
+                            onClick={handleLogout}
+                            disabled={isPending}
+                        >
+                            {isPending
+                                ? <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                : <LogOut className="mr-2 h-4 w-4" />
+                            }
+                            <span>{isPending ? "Signing out..." : "Log out"}</span>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

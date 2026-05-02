@@ -18,7 +18,9 @@ import {
     ChevronRight,
     ListOrdered,
     Briefcase,
-    UserPlus
+    UserPlus,
+    CreditCard,
+    TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -77,6 +79,8 @@ export function Sidebar({ user }: SidebarProps) {
             items: [
                 { title: "Doctors", href: "/dashboard/doctors", icon: Stethoscope, roles: ["clinic_owner", "receptionist"] },
                 { title: "Services", href: "/dashboard/services", icon: Briefcase, roles: ["clinic_owner"] },
+                { title: "Reports", href: "/dashboard/reports", icon: TrendingUp, roles: ["clinic_owner", "super_admin"] },
+                { title: "Billing", href: "/dashboard/billing", icon: CreditCard, roles: ["clinic_owner"] },
                 { title: "Settings", href: "/dashboard/settings", icon: Settings, roles: ["clinic_owner", "super_admin"] },
             ],
         },

@@ -31,7 +31,7 @@ const item = {
 
 export function DashboardContent({ user }: DashboardContentProps) {
     return (
-        <div className="min-h-[calc(100vh-60px)] p-4 md:p-6 lg:p-8 space-y-8 bg-[var(--bg-canvas)]">
+        <div className="min-h-[calc(100vh-60px)] space-y-8">
             <div className="flex flex-col gap-2 mb-6">
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}

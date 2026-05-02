@@ -3,8 +3,9 @@ import db from "@/lib/db";
 import { notFound, redirect } from "next/navigation";
 import { ConsultationWorkspace } from "@/components/consultation/consultation-workspace";
 
-export default async function ConsultationPage({ params }: { params: { id: string } }) {
+export default async function ConsultationPage({ params }: { params: Promise<{ id: string }> }) {
     const session = await requireSession();
+    const { id } = await params;
 
     // Fetch the appointment and patient details
     const appointmentResult = await db.query(
@@ -12,7 +13,7 @@ export default async function ConsultationPage({ params }: { params: { id: strin
          FROM appointments a
          JOIN patients p ON a.patient_id = p.patient_id
          WHERE a.appointment_id = $1 AND a.clinic_id = $2`,
-        [params.id, session.clinic_id]
+        [id, session.clinic_id]
     );
 
     if (appointmentResult.rows.length === 0) {
@@ -21,9 +22,7 @@ export default async function ConsultationPage({ params }: { params: { id: strin
 
     const appointment = appointmentResult.rows[0];
 
-    // Optional: Only allow access if the appointment belongs to this doctor, or user is admin
     if (session.role === "doctor" && appointment.doctor_id !== session.user_id) {
-        // Just redirect if it's not their appointment
         redirect("/dashboard");
     }
 
