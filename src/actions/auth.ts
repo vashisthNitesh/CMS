@@ -12,6 +12,9 @@ export async function loginAction(formData: FormData) {
         return { error: "Email and password required" };
     }
 
+    let success = false;
+    let errorMsg = "";
+
     try {
         const user = await authenticateUser(email, password);
         const token = createToken(user);
@@ -25,10 +28,16 @@ export async function loginAction(formData: FormData) {
             path: "/",
         });
 
-        return { success: true, role: user.role };
+        success = true;
     } catch (error) {
-        return { error: (error as Error).message };
+        errorMsg = (error as Error).message;
     }
+
+    if (!success) {
+        return { error: errorMsg };
+    }
+    
+    redirect("/dashboard");
 }
 
 export async function logoutAction() {

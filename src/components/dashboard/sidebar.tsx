@@ -181,12 +181,16 @@ function SidebarNav({
 
 /* ======= MAIN SIDEBAR EXPORT ======= */
 export function Sidebar({ session }: { session: SessionUser }) {
-    const [collapsed, setCollapsed] = useState(() => {
+    const [collapsed, setCollapsed] = useState(false);
+
+    useEffect(() => {
         if (typeof window !== "undefined") {
-            return localStorage.getItem("sidebar-collapsed") === "true";
+            if (localStorage.getItem("sidebar-collapsed") === "true") {
+                setCollapsed(true);
+            }
         }
-        return false;
-    });
+    }, []);
+
     const roleLabel = session.role.replace(/_/g, " ");
     const initials = `${session.first_name[0]}${session.last_name[0]}`.toUpperCase();
 
